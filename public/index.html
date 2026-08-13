@@ -1,1 +1,547 @@
-placeholder - the real page is uploaded next
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QueueForNothing.com — The Global Queue for Nothing</title>
+<meta name="description" content="One line. The whole planet. No reason. Nothing awaits.">
+<meta property="og:title" content="The Global Queue for Nothing">
+<meta property="og:description" content="One line. The whole planet. No reason. Nothing awaits.">
+<meta property="og:type" content="website">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg:#0e0d12; --card:#17161e; --card2:#1e1d27; --text:#f2f0ea;
+    --muted:#8b8896; --accent:#ffd166; --accent2:#ef6f6c; --line:#2a2935;
+  }
+  html, body { height:100%; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:Georgia,'Times New Roman',serif;
+    display:flex; flex-direction:column; align-items:center;
+    min-height:100vh; overflow-x:hidden;
+  }
+  .topbar {
+    width:100%; display:flex; justify-content:space-between; align-items:center;
+    padding:10px 16px; border-bottom:1px solid var(--line); background:var(--card);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  .brand { font-size:13px; color:var(--muted); letter-spacing:1px; }
+  .brand b { color:var(--accent); font-weight:600; }
+  .lang-btn {
+    background:none; border:1px solid var(--line); color:var(--muted);
+    font-size:12px; padding:4px 12px; border-radius:999px; cursor:pointer;
+  }
+  .lang-btn:hover { color:var(--text); }
+  .ticker {
+    width:100%; background:var(--card); border-bottom:1px solid var(--line);
+    overflow:hidden; white-space:nowrap; font-size:13px; color:var(--muted);
+    padding:8px 0; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    min-height:32px;
+  }
+  .ticker-inner { display:inline-block; animation:scroll 35s linear infinite; padding-left:100%; }
+  @keyframes scroll { from{transform:translateX(0);} to{transform:translateX(-100%);} }
+  .wrap { width:100%; max-width:640px; padding:38px 20px 60px; text-align:center; }
+  h1 { font-size:clamp(26px,5vw,38px); font-weight:normal; letter-spacing:.5px; margin-bottom:6px; }
+  h1 .nothing { color:var(--accent); font-style:italic; }
+  .tagline { color:var(--muted); font-style:italic; font-size:15px; margin-bottom:34px; }
+  .join-card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:38px 28px; }
+  .join-card p { color:var(--muted); font-size:15px; line-height:1.7; margin-bottom:24px; }
+  .join-card p strong { color:var(--text); }
+  .big-btn {
+    background:var(--accent); color:#1a1408; border:none; font-size:18px; font-family:inherit;
+    padding:16px 36px; border-radius:999px; cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 4px 20px rgba(255,209,102,.25);
+  }
+  .big-btn:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(255,209,102,.35); }
+  .big-btn:disabled { opacity:.5; cursor:wait; transform:none; }
+  .fine { font-size:12px; color:var(--muted); margin-top:16px; font-style:italic; }
+  .hidden { display:none !important; }
+  .position-label {
+    text-transform:uppercase; letter-spacing:3px; font-size:12px; color:var(--muted);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; margin-bottom:8px;
+  }
+  .position {
+    font-size:clamp(56px,14vw,96px); font-variant-numeric:tabular-nums; letter-spacing:2px;
+    line-height:1.1; text-shadow:0 0 40px rgba(255,209,102,.15); transition:color .3s;
+  }
+  .position.moved { color:var(--accent); }
+  .sub-position { color:var(--muted); font-size:14px; margin-top:10px; font-style:italic; min-height:20px; }
+  .stats { display:flex; justify-content:center; gap:12px; margin:32px 0 24px; flex-wrap:wrap; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 18px; min-width:150px; }
+  .stat .num { font-size:20px; font-variant-numeric:tabular-nums; }
+  .stat .lbl { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:4px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+  .progress-track { background:var(--card); border:1px solid var(--line); border-radius:999px; height:14px; overflow:hidden; margin-bottom:8px; }
+  .progress-fill { background:linear-gradient(90deg,var(--accent2),var(--accent)); height:100%; width:0%; border-radius:999px; transition:width .8s ease; }
+  .progress-note { font-size:12px; color:var(--muted); font-style:italic; margin-bottom:28px; }
+  .btn-row { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .skip-btn {
+    background:var(--card2); color:var(--text); border:1px solid var(--accent); font-family:inherit;
+    font-size:15px; padding:13px 24px; border-radius:999px; cursor:pointer; transition:background .15s;
+  }
+  .skip-btn:hover { background:#26242f; }
+  .skip-btn .price { color:var(--accent); }
+  .ghost-btn {
+    background:none; border:1px solid var(--line); color:var(--muted); font-family:inherit;
+    font-size:13px; padding:13px 20px; border-radius:999px; cursor:pointer;
+  }
+  .ghost-btn:hover { color:var(--text); border-color:var(--muted); }
+  .toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:var(--card2); border:1px solid var(--line); color:var(--text);
+    padding:12px 22px; border-radius:999px; font-size:14px; opacity:0;
+    transition:all .4s ease; pointer-events:none; max-width:90vw; z-index:100;
+  }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .cert-wrap { animation:fadeIn 1s ease; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:none;} }
+  .certificate {
+    background:#f7f2e4; color:#2b2417; border-radius:6px; padding:42px 32px; margin:10px 0 22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.5); border:12px double #b89d5a;
+  }
+  .certificate h2 { font-size:24px; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+  .certificate .subtitle { font-style:italic; color:#7a6c4d; font-size:14px; margin-bottom:20px; }
+  .certificate .name {
+    font-size:30px; font-style:italic; border-bottom:1px solid #b89d5a;
+    display:inline-block; padding:0 20px 4px; margin-bottom:16px; min-width:200px;
+  }
+  .certificate .body-text { font-size:15px; line-height:1.7; color:#4a3f2a; }
+  .certificate .body-text strong { color:#2b2417; }
+  .certificate .seal {
+    width:74px; height:74px; border-radius:50%; background:#b89d5a; color:#f7f2e4;
+    display:flex; align-items:center; justify-content:center; font-size:10px; text-align:center;
+    line-height:1.3; margin:20px auto 0; text-transform:uppercase; letter-spacing:1px;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; transform:rotate(-8deg);
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
+  }
+  .name-input {
+    background:var(--card); border:1px solid var(--line); color:var(--text); font-family:inherit;
+    font-size:16px; padding:12px 18px; border-radius:999px; text-align:center;
+    width:100%; max-width:320px; margin-bottom:16px;
+  }
+  .name-input:focus { outline:none; border-color:var(--accent); }
+  .confetti { position:fixed; top:-20px; font-size:18px; animation:fall linear forwards; pointer-events:none; z-index:99; }
+  @keyframes fall { to { transform:translateY(110vh) rotate(720deg); opacity:.6; } }
+  footer { margin-top:auto; padding:18px; font-size:12px; color:var(--muted); font-style:italic; text-align:center; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><b>QueueForNothing.com</b> &nbsp;·&nbsp; <span id="brandTag">Nothing awaits.</span></div>
+  <button class="lang-btn" id="langBtn" onclick="toggleLang()">ΕΛ</button>
+</div>
+
+<div class="ticker"><div class="ticker-inner" id="ticker">&nbsp;</div></div>
+
+<div class="wrap">
+
+  <div id="screen-join">
+    <h1 id="titleJoin"></h1>
+    <p class="tagline" id="tagJoin"></p>
+    <div class="join-card">
+      <p id="introText"></p>
+      <button class="big-btn" id="joinBtn" onclick="joinQueue()"></button>
+      <p class="fine" id="fineJoin"></p>
+    </div>
+  </div>
+
+  <div id="screen-queue" class="hidden">
+    <h1 id="titleQueue"></h1>
+    <p class="tagline" id="tagQueue"></p>
+    <div class="position-label" id="posLabel"></div>
+    <div class="position" id="position">—</div>
+    <div class="sub-position" id="subPosition"></div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="statBehind">—</div><div class="lbl" id="lblBehind"></div></div>
+      <div class="stat"><div class="num" id="statEta">—</div><div class="lbl" id="lblEta"></div></div>
+      <div class="stat"><div class="num">0</div><div class="lbl" id="lblAwaits"></div></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <p class="progress-note" id="progressNote"></p>
+    <div class="btn-row">
+      <button class="skip-btn" id="skipBtn" onclick="skipAhead()"></button>
+      <button class="ghost-btn" id="shareBtn" onclick="sharePlace()"></button>
+    </div>
+  </div>
+
+  <div id="screen-cert" class="hidden cert-wrap">
+    <h1 id="certTitle"></h1>
+    <p class="tagline" id="certSub"></p>
+    <input class="name-input" id="nameInput" oninput="updateCertName()">
+    <div class="certificate">
+      <h2 id="certHeading"></h2>
+      <p class="subtitle" id="certOrg"></p>
+      <div class="name" id="certName">________</div>
+      <p class="body-text" id="certBody"></p>
+      <div class="seal" id="certSeal"></div>
+    </div>
+    <div class="btn-row">
+      <button class="big-btn" id="againBtn" onclick="joinAgain()"></button>
+      <button class="ghost-btn" id="shareCertBtn" onclick="shareCert()"></button>
+    </div>
+  </div>
+
+</div>
+
+<footer id="footerText"></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---------------- i18n ----------------
+  var STR = {
+    en: {
+      brandTag: "Nothing awaits.",
+      titleHtml: "The Global Queue<br>for <span class=\"nothing\">Nothing</span>",
+      tagJoin: "One line. The whole planet. No reason.",
+      intro: "At the end of this queue there is <strong>nothing</strong>.<br>No offer. No prize. No door.<br>Only the quiet glory of having waited.",
+      join: "Join the queue \u2192",
+      fine: "* By joining, you accept that you will receive absolutely nothing.",
+      tagQueue: "You're in. Now, wait.",
+      posLabel: "Your place in line",
+      behind: "behind you", eta: "estimated wait", awaits: "awaiting you",
+      youreNext: "You're next. Brace yourself for nothing.",
+      progress: function (p) { return "You have completed " + p + "% of your journey to nothing."; },
+      skip: "Skip 1,000 places \u2014 <span class=\"price\">\u20ac2</span>",
+      skipToast: "Coming soon. For now, everyone waits equally. Democracy.",
+      share: "\uD83D\uDCE3 Share my place",
+      shareText: function (n) { return "I am #" + n + " in the Global Queue for Nothing. Nothing awaits. \u2192 queuefornothing.com"; },
+      copied: "Copied! Paste it anywhere.",
+      joined: "Welcome. Your wait has begun. \uD83E\uDDD8",
+      moved: function (n) { return "The queue moved. " + n + " to go."; },
+      tickerJoin: function (flag, name, ago) { return flag + " Someone from " + name + " joined " + ago; },
+      tickerEmpty: "\uD83C\uDF0D The queue is open. The whole planet is welcome. Nothing awaits.",
+      agoS: function (s) { return s + "s ago"; },
+      agoM: function (m) { return m + " min ago"; },
+      agoH: function (h) { return h + "h ago"; },
+      etaMin: function (m) { return "~" + m + " min"; },
+      etaH: function (h) { return "~" + h + " hours"; },
+      etaD: function (d) { return "~" + d + " days"; },
+      etaSoon: "any moment",
+      certTitle: "You made it.",
+      certSub: "And as promised\u2026 there is nothing here. Congratulations.",
+      certHeading: "Certificate of Patience",
+      certOrg: "The Global Queue for Nothing \u00b7 queuefornothing.com",
+      certBody: function (wait, total) { return "waited <strong>" + wait + "</strong> in the Global Queue,<br>alongside <strong>" + total + "</strong> fellow humans,<br>reached the front of the line, and officially received<br><strong>absolutely nothing</strong>."; },
+      seal: "Officially<br>Nothing",
+      again: "Join again \uD83D\uDD01",
+      shareCert: "\uD83D\uDCE3 Share my achievement",
+      shareCertText: function (wait) { return "I waited " + wait + " in the Global Queue for Nothing and received absolutely nothing. \u2192 queuefornothing.com"; },
+      namePh: "Type your name",
+      footer: "No real queue was harmed in the making of this website.",
+      waitS: function (s) { return s + " seconds"; },
+      waitM: function (m) { return m + " minutes"; },
+      waitH: function (h, m) { return h + "h " + m + "min"; },
+      waitD: function (d, h) { return d + " days " + h + "h"; },
+      offline: "The queue is unreachable. It probably still exists. Try again."
+    },
+    el: {
+      brandTag: "\u03a4\u03af\u03c0\u03bf\u03c4\u03b1 \u03b4\u03b5\u03bd \u03c3\u03b5 \u03c0\u03b5\u03c1\u03b9\u03bc\u03ad\u03bd\u03b5\u03b9.",
+      titleHtml: "\u0397 \u03a0\u03b1\u03b3\u03ba\u03cc\u03c3\u03bc\u03b9\u03b1 \u039f\u03c5\u03c1\u03ac<br>\u03b3\u03b9\u03b1 \u03c4\u03bf <span class=\"nothing\">\u03a4\u03af\u03c0\u03bf\u03c4\u03b1</span>",
+      tagJoin: "\u039c\u03af\u03b1 \u03bf\u03c5\u03c1\u03ac. \u038c\u03bb\u03bf\u03c2 \u03bf \u03c0\u03bb\u03b1\u03bd\u03ae\u03c4\u03b7\u03c2. \u039a\u03b1\u03bd\u03ad\u03bd\u03b1\u03c2 \u03bb\u03cc\u03b3\u03bf\u03c2.",
+      intro: "\u03a3\u03c4\u03bf \u03c4\u03ad\u03bb\u03bf\u03c2 \u03b1\u03c5\u03c4\u03ae\u03c2 \u03c4\u03b7\u03c2 \u03bf\u03c5\u03c1\u03ac\u03c2 \u03b4\u03b5\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 <strong>\u03c4\u03af\u03c0\u03bf\u03c4\u03b1</strong>.<br>\u039a\u03b1\u03bc\u03af\u03b1 \u03c0\u03c1\u03bf\u03c3\u03c6\u03bf\u03c1\u03ac. \u039a\u03b1\u03bd\u03ad\u03bd\u03b1 \u03ad\u03c0\u03b1\u03b8\u03bb\u03bf. \u039a\u03b1\u03bc\u03af\u03b1 \u03c0\u03cc\u03c1\u03c4\u03b1.<br>\u039c\u03cc\u03bd\u03bf \u03b7 \u03b1\u03b8\u03cc\u03c1\u03c5\u03b2\u03b7 \u03b4\u03cc\u03be\u03b1 \u03c4\u03bf\u03c5 \u03bd\u03b1 \u03ad\u03c7\u03b5\u03b9\u03c2 \u03c0\u03b5\u03c1\u03b9\u03bc\u03ad\u03bd\u03b5\u03b9.",
+      join: "\u039c\u03c0\u03b5\u03c2 \u03c3\u03c4\u03b7\u03bd \u03bf\u03c5\u03c1\u03ac \u2192",
+      fine: "* \u039c\u03b5 \u03c4\u03b7\u03bd \u03b5\u03af\u03c3\u03bf\u03b4\u03cc \u03c3\u03bf\u03c5 \u03b1\u03c0\u03bf\u03b4\u03ad\u03c7\u03b5\u03c3\u03b1\u03b9 \u03cc\u03c4\u03b9 \u03b4\u03b5\u03bd \u03b8\u03b1 \u03bb\u03ac\u03b2\u03b5\u03b9\u03c2 \u03b1\u03c0\u03bf\u03bb\u03cd\u03c4\u03c9\u03c2 \u03c4\u03af\u03c0\u03bf\u03c4\u03b1.",
+      tagQueue: "\u0395\u03af\u03c3\u03b1\u03b9 \u03bc\u03ad\u03c3\u03b1. \u03a4\u03ce\u03c1\u03b1, \u03c0\u03b5\u03c1\u03af\u03bc\u03b5\u03bd\u03b5.",
+      posLabel: "\u0397 \u03b8\u03ad\u03c3\u03b7 \u03c3\u03bf\u03c5 \u03c3\u03c4\u03b7\u03bd \u03bf\u03c5\u03c1\u03ac",
+      behind: "\u03c0\u03af\u03c3\u03c9 \u03c3\u03bf\u03c5", eta: "\u03b5\u03ba\u03c4\u03af\u03bc\u03b7\u03c3\u03b7 \u03b1\u03bd\u03b1\u03bc\u03bf\u03bd\u03ae\u03c2", awaits: "\u03c3\u03b5 \u03c0\u03b5\u03c1\u03b9\u03bc\u03ad\u03bd\u03b5\u03b9",
+      youreNext: "\u0395\u03af\u03c3\u03b1\u03b9 \u03bf \u03b5\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf\u03c2. \u0395\u03c4\u03bf\u03b9\u03bc\u03ac\u03c3\u03bf\u03c5 \u03b3\u03b9\u03b1 \u03c4\u03bf \u03c4\u03af\u03c0\u03bf\u03c4\u03b1.",
+      progress: function (p) { return "\u0388\u03c7\u03b5\u03b9\u03c2 \u03b4\u03b9\u03b1\u03bd\u03cd\u03c3\u03b5\u03b9 \u03c4\u03bf " + p + "% \u03c4\u03b7\u03c2 \u03b4\u03b9\u03b1\u03b4\u03c1\u03bf\u03bc\u03ae\u03c2 \u03c0\u03c1\u03bf\u03c2 \u03c4\u03bf \u03c4\u03af\u03c0\u03bf\u03c4\u03b1."; },
+      skip: "\u03a0\u03c1\u03bf\u03c3\u03c0\u03ad\u03c1\u03b1\u03c3\u03b5 1.000 \u03b8\u03ad\u03c3\u03b5\u03b9\u03c2 \u2014 <span class=\"price\">2\u20ac</span>",
+      skipToast: "\u0388\u03c1\u03c7\u03b5\u03c4\u03b1\u03b9 \u03c3\u03cd\u03bd\u03c4\u03bf\u03bc\u03b1. \u03a0\u03c1\u03bf\u03c2 \u03c4\u03bf \u03c0\u03b1\u03c1\u03cc\u03bd \u03cc\u03bb\u03bf\u03b9 \u03c0\u03b5\u03c1\u03b9\u03bc\u03ad\u03bd\u03bf\u03c5\u03bd \u03b5\u03be\u03af\u03c3\u03bf\u03c5. \u0394\u03b7\u03bc\u03bf\u03ba\u03c1\u03b1\u03c4\u03af\u03b1.",
+      share: "\uD83D\uDCE3 \u039c\u03bf\u03b9\u03c1\u03ac\u03c3\u03bf\u03c5 \u03c4\u03b7 \u03b8\u03ad\u03c3\u03b7 \u03bc\u03bf\u03c5",
+      shareText: function (n) { return "\u0395\u03af\u03bc\u03b1\u03b9 \u03bf \u03bd\u03bf\u03cd\u03bc\u03b5\u03c1\u03bf " + n + " \u03c3\u03c4\u03b7\u03bd \u03a0\u03b1\u03b3\u03ba\u03cc\u03c3\u03bc\u03b9\u03b1 \u039f\u03c5\u03c1\u03ac \u03b3\u03b9\u03b1 \u03c4\u03bf \u03a4\u03af\u03c0\u03bf\u03c4\u03b1. \u2192 queuefornothing.com"; },
+      copied: "\u0391\u03bd\u03c4\u03b9\u03b3\u03c1\u03ac\u03c6\u03b7\u03ba\u03b5! \u039a\u03cc\u03bb\u03bb\u03b7\u03c3\u03ad \u03c4\u03bf \u03cc\u03c0\u03bf\u03c5 \u03b8\u03b5\u03c2.",
+      joined: "\u039a\u03b1\u03bb\u03ce\u03c2 \u03ae\u03c1\u03b8\u03b5\u03c2. \u0397 \u03b1\u03bd\u03b1\u03bc\u03bf\u03bd\u03ae \u03c3\u03bf\u03c5 \u03be\u03b5\u03ba\u03af\u03bd\u03b7\u03c3\u03b5. \uD83E\uDDD8",
+      moved: function (n) { return "\u0397 \u03bf\u03c5\u03c1\u03ac \u03c0\u03c1\u03bf\u03c7\u03ce\u03c1\u03b7\u03c3\u03b5. \u0391\u03ba\u03cc\u03bc\u03b1 " + n + "."; },
+      tickerJoin: function (flag, name, ago) { return flag + " \u039a\u03ac\u03c0\u03bf\u03b9\u03bf\u03c2 \u03b1\u03c0\u03cc " + name + " \u03bc\u03c0\u03ae\u03ba\u03b5 " + ago; },
+      tickerEmpty: "\uD83C\uDF0D \u0397 \u03bf\u03c5\u03c1\u03ac \u03ac\u03bd\u03bf\u03b9\u03be\u03b5. \u038c\u03bb\u03bf\u03c2 \u03bf \u03c0\u03bb\u03b1\u03bd\u03ae\u03c4\u03b7\u03c2 \u03b5\u03c5\u03c0\u03c1\u03cc\u03c3\u03b4\u03b5\u03ba\u03c4\u03bf\u03c2. \u03a4\u03af\u03c0\u03bf\u03c4\u03b1 \u03b4\u03b5\u03bd \u03c3\u03b1\u03c2 \u03c0\u03b5\u03c1\u03b9\u03bc\u03ad\u03bd\u03b5\u03b9.",
+      agoS: function (s) { return "\u03c0\u03c1\u03b9\u03bd " + s + "\u2033"; },
+      agoM: function (m) { return "\u03c0\u03c1\u03b9\u03bd " + m + "\u2032"; },
+      agoH: function (h) { return "\u03c0\u03c1\u03b9\u03bd " + h + " \u03ce\u03c1\u03b5\u03c2"; },
+      etaMin: function (m) { return "~" + m + "\u2032"; },
+      etaH: function (h) { return "~" + h + " \u03ce\u03c1\u03b5\u03c2"; },
+      etaD: function (d) { return "~" + d + " \u03bc\u03ad\u03c1\u03b5\u03c2"; },
+      etaSoon: "\u03b1\u03c0\u03cc \u03c3\u03c4\u03b9\u03b3\u03bc\u03ae \u03c3\u03b5 \u03c3\u03c4\u03b9\u03b3\u03bc\u03ae",
+      certTitle: "\u0388\u03c6\u03c4\u03b1\u03c3\u03b5\u03c2.",
+      certSub: "\u039a\u03b1\u03b9 \u03cc\u03c0\u03c9\u03c2 \u03c5\u03c0\u03bf\u03c3\u03c7\u03b5\u03b8\u03ae\u03ba\u03b1\u03bc\u03b5\u2026 \u03b4\u03b5\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 \u03c4\u03af\u03c0\u03bf\u03c4\u03b1 \u03b5\u03b4\u03ce. \u03a3\u03c5\u03b3\u03c7\u03b1\u03c1\u03b7\u03c4\u03ae\u03c1\u03b9\u03b1.",
+      certHeading: "\u03a0\u03b9\u03c3\u03c4\u03bf\u03c0\u03bf\u03b9\u03b7\u03c4\u03b9\u03ba\u03cc \u03a5\u03c0\u03bf\u03bc\u03bf\u03bd\u03ae\u03c2",
+      certOrg: "\u0397 \u03a0\u03b1\u03b3\u03ba\u03cc\u03c3\u03bc\u03b9\u03b1 \u039f\u03c5\u03c1\u03ac \u03b3\u03b9\u03b1 \u03c4\u03bf \u03a4\u03af\u03c0\u03bf\u03c4\u03b1 \u00b7 queuefornothing.com",
+      certBody: function (wait, total) { return "\u03c0\u03b5\u03c1\u03af\u03bc\u03b5\u03bd\u03b5 <strong>" + wait + "</strong> \u03c3\u03c4\u03b7\u03bd \u03a0\u03b1\u03b3\u03ba\u03cc\u03c3\u03bc\u03b9\u03b1 \u039f\u03c5\u03c1\u03ac,<br>\u03bc\u03b1\u03b6\u03af \u03bc\u03b5 <strong>" + total + "</strong> \u03c3\u03c5\u03bd\u03b1\u03bd\u03b8\u03c1\u03ce\u03c0\u03bf\u03c5\u03c2,<br>\u03ad\u03c6\u03c4\u03b1\u03c3\u03b5 \u03c3\u03c4\u03b7\u03bd \u03c0\u03c1\u03ce\u03c4\u03b7 \u03b8\u03ad\u03c3\u03b7 \u03ba\u03b1\u03b9 \u03c0\u03b1\u03c1\u03ad\u03bb\u03b1\u03b2\u03b5 \u03b5\u03c0\u03b9\u03c3\u03ae\u03bc\u03c9\u03c2<br><strong>\u03c4\u03bf \u03b1\u03c0\u03bf\u03bb\u03cd\u03c4\u03c9\u03c2 \u03c4\u03af\u03c0\u03bf\u03c4\u03b1</strong>."; },
+      seal: "\u0395\u03c0\u03b9\u03c3\u03ae\u03bc\u03c9\u03c2<br>\u03a4\u03af\u03c0\u03bf\u03c4\u03b1",
+      again: "\u039e\u03b1\u03bd\u03b1\u03bc\u03c0\u03b5\u03c2 \u03c3\u03c4\u03b7\u03bd \u03bf\u03c5\u03c1\u03ac \uD83D\uDD01",
+      shareCert: "\uD83D\uDCE3 \u039c\u03bf\u03b9\u03c1\u03ac\u03c3\u03bf\u03c5 \u03c4\u03bf \u03b5\u03c0\u03af\u03c4\u03b5\u03c5\u03b3\u03bc\u03b1",
+      shareCertText: function (wait) { return "\u03a0\u03b5\u03c1\u03af\u03bc\u03b5\u03bd\u03b1 " + wait + " \u03c3\u03c4\u03b7\u03bd \u03a0\u03b1\u03b3\u03ba\u03cc\u03c3\u03bc\u03b9\u03b1 \u039f\u03c5\u03c1\u03ac \u03b3\u03b9\u03b1 \u03c4\u03bf \u03a4\u03af\u03c0\u03bf\u03c4\u03b1 \u03ba\u03b1\u03b9 \u03c0\u03ae\u03c1\u03b1 \u03b1\u03c0\u03bf\u03bb\u03cd\u03c4\u03c9\u03c2 \u03c4\u03af\u03c0\u03bf\u03c4\u03b1. \u2192 queuefornothing.com"; },
+      namePh: "\u0393\u03c1\u03ac\u03c8\u03b5 \u03c4\u03bf \u03cc\u03bd\u03bf\u03bc\u03ac \u03c3\u03bf\u03c5",
+      footer: "\u039a\u03b1\u03bc\u03af\u03b1 \u03c0\u03c1\u03b1\u03b3\u03bc\u03b1\u03c4\u03b9\u03ba\u03ae \u03bf\u03c5\u03c1\u03ac \u03b4\u03b5\u03bd \u03c0\u03bb\u03b7\u03b3\u03ce\u03b8\u03b7\u03ba\u03b5 \u03ba\u03b1\u03c4\u03ac \u03c4\u03b7 \u03b4\u03b7\u03bc\u03b9\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03b1\u03c5\u03c4\u03bf\u03cd \u03c4\u03bf\u03c5 site.",
+      waitS: function (s) { return s + " \u03b4\u03b5\u03c5\u03c4\u03b5\u03c1\u03cc\u03bb\u03b5\u03c0\u03c4\u03b1"; },
+      waitM: function (m) { return m + " \u03bb\u03b5\u03c0\u03c4\u03ac"; },
+      waitH: function (h, m) { return h + " \u03ce\u03c1\u03b5\u03c2 \u03ba\u03b1\u03b9 " + m + "\u2032"; },
+      waitD: function (d, h) { return d + " \u03bc\u03ad\u03c1\u03b5\u03c2 \u03ba\u03b1\u03b9 " + h + " \u03ce\u03c1\u03b5\u03c2"; },
+      offline: "\u0397 \u03bf\u03c5\u03c1\u03ac \u03b4\u03b5\u03bd \u03b1\u03c0\u03b1\u03bd\u03c4\u03ac. \u039c\u03ac\u03bb\u03bb\u03bf\u03bd \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 \u03b1\u03ba\u03cc\u03bc\u03b1. \u0394\u03bf\u03ba\u03af\u03bc\u03b1\u03c3\u03b5 \u03be\u03b1\u03bd\u03ac."
+    }
+  };
+
+  var lang = "en"; // English for everyone; the topbar toggle switches to Greek if wanted
+  function T() { return STR[lang]; }
+
+  // ---------------- state ----------------
+  var ticket = null, joinedAt = null, startPos = null, lastPos = null;
+  var lastState = null, pollTimer = null;
+
+  try {
+    ticket = parseInt(localStorage.getItem("qfn_ticket"), 10) || null;
+    joinedAt = parseInt(localStorage.getItem("qfn_joinedAt"), 10) || null;
+    startPos = parseInt(localStorage.getItem("qfn_startPos"), 10) || null;
+  } catch (e) {}
+
+  function fmt(n) { return (n || 0).toLocaleString(lang === "el" ? "el-GR" : "en-US"); }
+
+  function flagEmoji(cc) {
+    if (!cc || cc.length !== 2 || cc === "XX") return "\uD83C\uDF0D";
+    var A = 127397;
+    return String.fromCodePoint(cc.charCodeAt(0) + A, cc.charCodeAt(1) + A);
+  }
+  function countryName(cc) {
+    if (!cc || cc === "XX") return lang === "el" ? "\u03ba\u03ac\u03c0\u03bf\u03c5 \u03c3\u03c4\u03b7 \u0393\u03b7" : "somewhere on Earth";
+    try { return new Intl.DisplayNames([lang], { type: "region" }).of(cc) || cc; }
+    catch (e) { return cc; }
+  }
+  function agoText(ms) {
+    var s = Math.max(1, Math.round(ms / 1000));
+    if (s < 60) return T().agoS(s);
+    var m = Math.round(s / 60);
+    if (m < 60) return T().agoM(m);
+    return T().agoH(Math.round(m / 60));
+  }
+  function etaText(pos, serveMs) {
+    if (pos <= 1) return T().etaSoon;
+    var mins = Math.round(pos * serveMs / 60000);
+    if (mins < 60) return T().etaMin(Math.max(1, mins));
+    var hours = Math.round(mins / 60);
+    if (hours < 48) return T().etaH(hours);
+    return T().etaD(Math.round(hours / 24));
+  }
+  function waitText(ms) {
+    var s = Math.round(ms / 1000);
+    if (s < 90) return T().waitS(s);
+    var m = Math.round(s / 60);
+    if (m < 90) return T().waitM(m);
+    var h = Math.floor(m / 60);
+    if (h < 48) return T().waitH(h, m % 60);
+    return T().waitD(Math.floor(h / 24), h % 24);
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(function () { t.classList.remove("show"); }, 2800);
+  }
+
+  // ---------------- i18n render ----------------
+  function renderStrings() {
+    var s = T();
+    document.documentElement.lang = lang;
+    document.getElementById("langBtn").textContent = lang === "el" ? "EN" : "\u0395\u039b";
+    document.getElementById("brandTag").textContent = s.brandTag;
+    document.getElementById("titleJoin").innerHTML = s.titleHtml;
+    document.getElementById("titleQueue").innerHTML = s.titleHtml;
+    document.getElementById("tagJoin").textContent = s.tagJoin;
+    document.getElementById("introText").innerHTML = s.intro;
+    document.getElementById("joinBtn").textContent = s.join;
+    document.getElementById("fineJoin").textContent = s.fine;
+    document.getElementById("tagQueue").textContent = s.tagQueue;
+    document.getElementById("posLabel").textContent = s.posLabel;
+    document.getElementById("lblBehind").textContent = s.behind;
+    document.getElementById("lblEta").textContent = s.eta;
+    document.getElementById("lblAwaits").textContent = s.awaits;
+    document.getElementById("skipBtn").innerHTML = s.skip;
+    document.getElementById("shareBtn").textContent = s.share;
+    document.getElementById("certTitle").textContent = s.certTitle;
+    document.getElementById("certSub").textContent = s.certSub;
+    document.getElementById("certHeading").textContent = s.certHeading;
+    document.getElementById("certOrg").textContent = s.certOrg;
+    document.getElementById("certSeal").innerHTML = s.seal;
+    document.getElementById("againBtn").textContent = s.again;
+    document.getElementById("shareCertBtn").textContent = s.shareCert;
+    document.getElementById("nameInput").placeholder = s.namePh;
+    document.getElementById("footerText").textContent = s.footer;
+    if (lastState) applyState(lastState, false);
+  }
+  function toggleLang() {
+    lang = lang === "el" ? "en" : "el";
+    try { localStorage.setItem("qfn_lang", lang); } catch (e) {}
+    renderStrings();
+  }
+  try { var savedLang = localStorage.getItem("qfn_lang"); if (savedLang) lang = savedLang; } catch (e) {}
+
+  // ---------------- screens ----------------
+  function show(id) {
+    ["screen-join", "screen-queue", "screen-cert"].forEach(function (s) {
+      document.getElementById(s).classList.toggle("hidden", s !== id);
+    });
+  }
+
+  // ---------------- api ----------------
+  function api(path, opts) {
+    return fetch(path, opts).then(function (r) {
+      if (!r.ok) throw new Error("bad status " + r.status);
+      return r.json();
+    });
+  }
+
+  function joinQueue() {
+    var btn = document.getElementById("joinBtn");
+    btn.disabled = true;
+    api("/api/join", { method: "POST" }).then(function (st) {
+      ticket = st.ticket;
+      joinedAt = st.joinedAt || Date.now();
+      startPos = Math.max(1, ticket - (st.served || 0));
+      try {
+        localStorage.setItem("qfn_ticket", String(ticket));
+        localStorage.setItem("qfn_joinedAt", String(joinedAt));
+        localStorage.setItem("qfn_startPos", String(startPos));
+      } catch (e) {}
+      btn.disabled = false;
+      showToast(T().joined);
+      applyState(st, false);
+      startPolling();
+    }).catch(function () {
+      btn.disabled = false;
+      showToast(T().offline);
+    });
+  }
+
+  function joinAgain() {
+    ticket = null; joinedAt = null; startPos = null; lastPos = null;
+    try {
+      localStorage.removeItem("qfn_ticket");
+      localStorage.removeItem("qfn_joinedAt");
+      localStorage.removeItem("qfn_startPos");
+    } catch (e) {}
+    joinQueue();
+  }
+
+  function refresh() {
+    var q = ticket ? "?ticket=" + ticket : "";
+    api("/api/state" + q).then(function (st) {
+      applyState(st, true);
+    }).catch(function () {});
+  }
+
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(refresh, 6000);
+  }
+
+  // ---------------- render state ----------------
+  function applyState(st, animate) {
+    lastState = st;
+    renderTicker(st);
+    if (!ticket) { show("screen-join"); return; }
+
+    var pos = Math.max(0, ticket - (st.served || 0));
+    if (pos <= 0) { showCertificate(st); return; }
+
+    show("screen-queue");
+    var posEl = document.getElementById("position");
+    posEl.textContent = fmt(pos);
+    if (animate && lastPos !== null && pos < lastPos) {
+      posEl.classList.add("moved");
+      setTimeout(function () { posEl.classList.remove("moved"); }, 600);
+      document.getElementById("subPosition").textContent = T().moved(fmt(pos));
+    }
+    if (pos === 1) document.getElementById("subPosition").textContent = T().youreNext;
+    lastPos = pos;
+
+    document.getElementById("statBehind").textContent = fmt(Math.max(0, (st.total || 0) - ticket));
+    document.getElementById("statEta").textContent = etaText(pos, st.serveMs || 60000);
+
+    var sp = startPos || Math.max(1, pos);
+    var pct = Math.max(0, Math.min(100, (1 - pos / sp) * 100));
+    document.getElementById("progressFill").style.width = Math.max(0.5, pct) + "%";
+    var pctStr = pct.toFixed(1);
+    if (lang === "el") pctStr = pctStr.replace(".", ",");
+    document.getElementById("progressNote").textContent = T().progress(pctStr);
+  }
+
+  function renderTicker(st) {
+    var el = document.getElementById("ticker");
+    var items = [];
+    var now = st.now || Date.now();
+    (st.recent || []).forEach(function (r) {
+      items.push(T().tickerJoin(flagEmoji(r.c), countryName(r.c), agoText(now - r.t)));
+    });
+    if (!items.length) items.push(T().tickerEmpty);
+    var line = items.join(" \u00a0\u2022\u00a0 ");
+    el.textContent = line + " \u00a0\u2022\u00a0 " + line;
+  }
+
+  // ---------------- certificate ----------------
+  function showCertificate(st) {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    show("screen-cert");
+    var waited = joinedAt ? waitText(Date.now() - joinedAt) : waitText((startPos || 1) * (st.serveMs || 60000));
+    document.getElementById("certBody").innerHTML = T().certBody(waited, fmt(st.total || 0));
+    updateCertName();
+    confettiBurst();
+  }
+  window.__qfnShowCert = function () { showCertificate(lastState || { total: 0, serveMs: 60000 }); };
+
+  function updateCertName() {
+    var v = document.getElementById("nameInput").value.trim();
+    document.getElementById("certName").textContent = v || "________";
+  }
+
+  function confettiBurst() {
+    var emojis = ["\uD83C\uDF89", "\u2728", "\uD83C\uDFC6", "\u2B50", "\uD83C\uDF8A", "\uD83D\uDD73\uFE0F"];
+    for (var i = 0; i < 50; i++) {
+      (function (i) {
+        setTimeout(function () {
+          var c = document.createElement("div");
+          c.className = "confetti";
+          c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          c.style.left = Math.random() * 100 + "vw";
+          c.style.animationDuration = (2.5 + Math.random() * 2.5) + "s";
+          document.body.appendChild(c);
+          setTimeout(function () { c.remove(); }, 6000);
+        }, i * 50);
+      })(i);
+    }
+  }
+
+  // ---------------- actions ----------------
+  function skipAhead() { showToast(T().skipToast); }
+
+  function copyText(txt) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () { showToast(T().copied); });
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); ta.remove();
+      showToast(T().copied);
+    }
+  }
+  function sharePlace() {
+    var txt = T().shareText(fmt(ticket));
+    if (navigator.share) { navigator.share({ text: txt }).catch(function () {}); }
+    else copyText(txt);
+  }
+  function shareCert() {
+    var waited = joinedAt ? waitText(Date.now() - joinedAt) : "";
+    var txt = T().shareCertText(waited);
+    if (navigator.share) { navigator.share({ text: txt }).catch(function () {}); }
+    else copyText(txt);
+  }
+
+  // ---------------- boot ----------------
+  renderStrings();
+  show(ticket ? "screen-queue" : "screen-join");
+  refresh();
+  if (ticket) startPolling();
+</script>
+</body>
+</html>
