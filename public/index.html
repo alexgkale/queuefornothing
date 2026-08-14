@@ -524,7 +524,8 @@
     }
   }
   function sharePlace() {
-    var txt = T().shareText(fmt(ticket));
+    var pos = lastState ? Math.max(1, ticket - (lastState.served || 0)) : ticket;
+    var txt = T().shareText(fmt(pos));
     if (navigator.share) { navigator.share({ text: txt }).catch(function () {}); }
     else copyText(txt);
   }
