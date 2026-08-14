@@ -8,6 +8,14 @@
 <meta property="og:title" content="The Global Queue for Nothing">
 <meta property="og:description" content="One line. The whole planet. No reason. Nothing awaits.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://queuefornothing.com">
+<meta property="og:image" content="https://queuefornothing.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Global Queue for Nothing">
+<meta name="twitter:description" content="One line. The whole planet. No reason. Nothing awaits.">
+<meta name="twitter:image" content="https://queuefornothing.com/og.png">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -423,6 +431,7 @@
   }
 
   function refresh() {
+    if (document.hidden) return; // parked tabs don't hammer the server
     var q = ticket ? "?ticket=" + ticket : "";
     api("/api/state" + q).then(function (st) {
       applyState(st, true);
@@ -431,7 +440,7 @@
 
   function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
-    pollTimer = setInterval(refresh, 6000);
+    pollTimer = setInterval(refresh, 12000);
   }
 
   // ---------------- render state ----------------
@@ -541,6 +550,9 @@
   show(ticket ? "screen-queue" : "screen-join");
   refresh();
   if (ticket) startPolling();
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) refresh(); // catch up the moment the tab comes back
+  });
 </script>
 </body>
 </html>
