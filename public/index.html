@@ -161,7 +161,6 @@
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <p class="progress-note" id="progressNote"></p>
     <div class="btn-row">
-      <button class="skip-btn" id="skipBtn" onclick="skipAhead()"></button>
       <button class="ghost-btn" id="shareBtn" onclick="sharePlace()"></button>
     </div>
   </div>
@@ -357,7 +356,6 @@
     document.getElementById("lblBehind").textContent = s.behind;
     document.getElementById("lblEta").textContent = s.eta;
     document.getElementById("lblAwaits").textContent = s.awaits;
-    document.getElementById("skipBtn").innerHTML = s.skip;
     document.getElementById("shareBtn").textContent = s.share;
     document.getElementById("certTitle").textContent = s.certTitle;
     document.getElementById("certSub").textContent = s.certSub;
